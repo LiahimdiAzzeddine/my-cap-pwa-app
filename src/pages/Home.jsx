@@ -102,7 +102,11 @@ import {
     };
   
     return (
-      <div id="home-page">
+      <div id="home-page" style={{
+        margin: "0 1rem", // Marges latérales
+        paddingTop: "env(safe-area-inset-top)", // Espace en haut pour les encoches
+        paddingBottom: "env(safe-area-inset-bottom)", // Espace en bas
+      }}>
         <IonPage>
           <IonHeader>
             <IonToolbar>
