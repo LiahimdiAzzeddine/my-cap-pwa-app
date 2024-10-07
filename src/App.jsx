@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
   IonTabs,
   IonTab,
@@ -34,41 +34,44 @@ import "@ionic/react/css/display.css";
 
 import { setupIonicReact } from "@ionic/react";
 import "./theme/variables.css";
+import { StatusBar } from '@capacitor/status-bar';
+
 setupIonicReact();
 
 function App() {
-  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    // Masquer la barre d'état sur iOS
+    StatusBar.setOverlays(true);
+    StatusBar.setBackgroundColor({ color: '#ffffff' }); // Couleur de fond pour la barre d'état
+    StatusBar.setStyle({ style: 'DARK' }); // Style sombre pour le texte de la barre d'état
+  }, []);
 
   return (
-    
     <IonTabs>
       <IonTab tab="home">
-       <Home/>
+        <Home />
       </IonTab>
- 
-      <IonTab tab="search">
-      <IonPage style={{
-      paddingTop: "env(safe-area-inset-top)", // Espace en haut pour les encoches
-      paddingBottom: "env(safe-area-inset-bottom)", // Espace en bas
-    }}>
-      <IonHeader >
-        <IonToolbar>
-          <IonTitle>Instructions</IonTitle>
-        </IonToolbar>
-      </IonHeader>
 
-      <IonContent className="ion-padding">
-        <IonText>
-          <h2>Instructions pour le Scanner</h2>
-          <p>
-            Ce scanner est conçu pour l'application mobile Tico. Il ne prend pas en charge le scan vertical, donc le code-barres doit être placé à l'intérieur du rectangle et correspondre à l'image de fond.
-          </p>
-          <p>
-            Le scanner est équipé d'un autofocus. Stabilisez votre téléphone, approchez ou éloignez-le lentement du code-barres pour améliorer la détection.
-          </p>
-        </IonText>
-      </IonContent>
-    </IonPage>
+      <IonTab tab="search">
+        <IonPage>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Instructions</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+
+          <IonContent className="ion-padding">
+            <IonText>
+              <h2>Instructions pour le Scanner</h2>
+              <p>
+                Ce scanner est conçu pour l'application mobile Tico. Il ne prend pas en charge le scan vertical, donc le code-barres doit être placé à l'intérieur du rectangle et correspondre à l'image de fond.
+              </p>
+              <p>
+                Le scanner est équipé d'un autofocus. Stabilisez votre téléphone, approchez ou éloignez-le lentement du code-barres pour améliorer la détection.
+              </p>
+            </IonText>
+          </IonContent>
+        </IonPage>
       </IonTab>
 
       <IonTabBar slot="bottom">
@@ -82,7 +85,6 @@ function App() {
         </IonTabButton>
       </IonTabBar>
     </IonTabs>
-    
   );
 }
 
