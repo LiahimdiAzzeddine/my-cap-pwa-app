@@ -47,3 +47,7 @@
     max-height: 100%;
     opacity: 0.4;
   }
+/* styles.css */
+.margin-top {
+  margin-top: 56px; /* Ajustez cette valeur selon vos besoins */
+}

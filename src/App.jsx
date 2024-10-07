@@ -40,19 +40,18 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div style={{
-      margin: "0 1rem", // Marges latérales
-      paddingTop: "env(safe-area-inset-top)", // Espace en haut pour les encoches
-      paddingBottom: "env(safe-area-inset-bottom)", // Espace en bas
-    }}>
+    
     <IonTabs>
       <IonTab tab="home">
        <Home/>
       </IonTab>
  
       <IonTab tab="search">
-      <IonPage>
-      <IonHeader>
+      <IonPage style={{
+      paddingTop: "env(safe-area-inset-top)", // Espace en haut pour les encoches
+      paddingBottom: "env(safe-area-inset-bottom)", // Espace en bas
+    }}>
+      <IonHeader >
         <IonToolbar>
           <IonTitle>Instructions</IonTitle>
         </IonToolbar>
@@ -83,7 +82,7 @@ function App() {
         </IonTabButton>
       </IonTabBar>
     </IonTabs>
-    </div>
+    
   );
 }
 

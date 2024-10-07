@@ -1,151 +1,163 @@
 import {
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonIcon,
-    IonPage,
-    IonRow,
-    IonText,
-    IonTitle,
-    IonToolbar,
-    useIonAlert,
-  } from "@ionic/react";
-  import { useEffect, useState } from "react";
-  import { BarcodeScanner, SupportedFormat } from '@capacitor-community/barcode-scanner';
-  import { scanOutline, stopCircleOutline } from "ionicons/icons";
-  import "./Home.css";
-  import frame from "../assets/frame.svg";
-  import whiteLogo from "../assets/logo-white.svg";
-  
-  function Home() {
-    const [err, setErr] = useState();
-    const [hideBg, setHideBg] = useState(false);
-    const [present] = useIonAlert();
-  
-    const checkPermission = async () => {
-      setErr(undefined);
-      try {
-        // Vérifiez d'abord sans forcer la demande
-        const status = await BarcodeScanner.checkPermission({ force: false });
-  
-        if (status.granted) {
-          return true;
-        }
-  
-        if (status.denied) {
-          const c = confirm('If you want to grant permission for using your camera, enable it in the app settings.');
-          if (c) {
-            await BarcodeScanner.openAppSettings();
-          }
-          setErr("Permission d'accès à la caméra refusée. Veuillez l'activer dans les paramètres de l'application.");
-          return false;
-        }
-  
-        if (status.neverAsked || status.restricted || status.unknown) {
-          // Demander la permission
-          const statusRequest = await BarcodeScanner.checkPermission({ force: true });
-  
-          if (statusRequest.granted) {
-            return true;
-          } else {
-            setErr("Permission d'accès à la caméra non accordée.");
-            return false;
-          }
-        }
-  
-        // Si on arrive ici, on n'a pas encore la permission
-        setErr("Permission d'accès à la caméra non accordée.");
-        const c = confirm('If you want to grant permission for using your camera, enable it in the app settings.');
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonPage,
+  IonRow,
+  IonText,
+  IonTitle,
+  IonToolbar,
+  useIonAlert,
+} from "@ionic/react";
+import { useEffect, useState } from "react";
+import {
+  BarcodeScanner,
+  SupportedFormat,
+} from "@capacitor-community/barcode-scanner";
+import { scanOutline, stopCircleOutline } from "ionicons/icons";
+import "./Home.css";
+import frame from "../assets/frame.svg";
+import whiteLogo from "../assets/logo-white.svg";
+
+function Home() {
+  const [err, setErr] = useState();
+  const [hideBg, setHideBg] = useState(false);
+  const [present] = useIonAlert();
+
+  const checkPermission = async () => {
+    setErr(undefined);
+    try {
+      // Vérifiez d'abord sans forcer la demande
+      const status = await BarcodeScanner.checkPermission({ force: false });
+
+      if (status.granted) {
+        return true;
+      }
+
+      if (status.denied) {
+        const c = confirm(
+          "If you want to grant permission for using your camera, enable it in the app settings."
+        );
         if (c) {
           await BarcodeScanner.openAppSettings();
         }
-        return false;
-  
-      } catch (error) {
-        setErr(`Erreur lors de la vérification des permissions : ${error.message}`);
+        setErr(
+          "Permission d'accès à la caméra refusée. Veuillez l'activer dans les paramètres de l'application."
+        );
         return false;
       }
-    };
-  
-    const startScan = async () => {
-      const hasPermission = await checkPermission(); // Vérifiez la permission avant de démarrer la numérisation
-      if (!hasPermission) {
-        return;
-      }
-  
-      BarcodeScanner.hideBackground();
-      setHideBg(true);
-      // make background of WebView transparent
-  //{ targetedFormats: [SupportedFormat.CODE_128, SupportedFormat.EAN_13, SupportedFormat.EAN_8] }
-      const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
-  
-      // if the result has content
-      if (result.hasContent) {
-        stopScan();
-        present({
-          message: result.content,
-          buttons: [
-            "Cancel",
-            { text: "Ok", handler: (d) => console.log("ok pressed") },
-          ],
-          onDidDismiss: (e) => console.log("did dismiss"),
+
+      if (status.neverAsked || status.restricted || status.unknown) {
+        // Demander la permission
+        const statusRequest = await BarcodeScanner.checkPermission({
+          force: true,
         });
-        console.log(result.content); // log the raw scanned content
+
+        if (statusRequest.granted) {
+          return true;
+        } else {
+          setErr("Permission d'accès à la caméra non accordée.");
+          return false;
+        }
       }
-    };
-  
-    const stopScan = () => {
-      BarcodeScanner.showBackground();
-      setHideBg(false);
-      BarcodeScanner.stopScan();
-    };
-  
-    return (
-      <div id="home-page" style={{
-        margin: "0 1rem", // Marges latérales
-        paddingTop: "env(safe-area-inset-top)", // Espace en haut pour les encoches
-        paddingBottom: "env(safe-area-inset-bottom)", // Espace en bas
-      }}>
-        <IonPage>
-          <IonHeader>
-            <IonToolbar>
-              <IonTitle>Barcode Scanner</IonTitle>
-              {hideBg && (
-                <IonButtons slot="end">
-                  <IonButton onClick={stopScan} color="danger">
-                    <IonIcon icon={stopCircleOutline} slot="start" />
-                    Stop Scan
-                  </IonButton>
-                </IonButtons>
-              )}
-            </IonToolbar>
-          </IonHeader>
-          <IonContent className={hideBg ? "hideBg" : "ion-padding"}>
-            {err && (
-              <IonRow>
-                <IonText color="danger">{err}</IonText>
-              </IonRow>
+
+      // Si on arrive ici, on n'a pas encore la permission
+      setErr("Permission d'accès à la caméra non accordée.");
+      const c = confirm(
+        "If you want to grant permission for using your camera, enable it in the app settings."
+      );
+      if (c) {
+        await BarcodeScanner.openAppSettings();
+      }
+      return false;
+    } catch (error) {
+      setErr(
+        `Erreur lors de la vérification des permissions : ${error.message}`
+      );
+      return false;
+    }
+  };
+
+  const startScan = async () => {
+    const hasPermission = await checkPermission(); // Vérifiez la permission avant de démarrer la numérisation
+    if (!hasPermission) {
+      return;
+    }
+
+    BarcodeScanner.hideBackground();
+    setHideBg(true);
+    // make background of WebView transparent
+    //{ targetedFormats: [SupportedFormat.CODE_128, SupportedFormat.EAN_13, SupportedFormat.EAN_8] }
+    const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+
+    // if the result has content
+    if (result.hasContent) {
+      stopScan();
+      present({
+        message: result.content,
+        buttons: [
+          "Cancel",
+          { text: "Ok", handler: (d) => console.log("ok pressed") },
+        ],
+        onDidDismiss: (e) => console.log("did dismiss"),
+      });
+      console.log(result.content); // log the raw scanned content
+    }
+  };
+
+  const stopScan = () => {
+    BarcodeScanner.showBackground();
+    setHideBg(false);
+    BarcodeScanner.stopScan();
+  };
+
+  return (
+    <div id="home-page">
+      <IonPage
+        style={{
+          paddingTop: "env(safe-area-inset-top)", 
+          paddingBottom: "env(safe-area-inset-bottom)",
+        }}
+      >
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Barcode Scanner</IonTitle>
+            {hideBg && (
+              <IonButtons slot="end">
+                <IonButton onClick={stopScan} color="danger">
+                  <IonIcon icon={stopCircleOutline} slot="start" />
+                  Stop Scan
+                </IonButton>
+              </IonButtons>
             )}
-            {!err && hideBg && (
-              <div className="scan-container">
-                <img src={whiteLogo} alt="Logo" className="logo-top" />
-                <div className="scan-box">
-                  <img src={frame} alt="Frame" className="frame-center" />
-                </div>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className={hideBg ? "hideBg" : "ion-padding"}>
+          {err && (
+            <IonRow>
+              <IonText color="danger">{err}</IonText>
+            </IonRow>
+          )}
+          {!err && hideBg && (
+            <div className="scan-container">
+              <img src={whiteLogo} alt="Logo" className="logo-top" />
+              <div className="scan-box">
+                <img src={frame} alt="Frame" className="frame-center" />
               </div>
-            )}
-            {!hideBg && (
-              <IonButton className="center-button" onClick={startScan}>
-                <IonIcon icon={scanOutline} slot="start" />
-                Start Scan
-              </IonButton>
-            )}
-          </IonContent>
-        </IonPage>
-      </div>
-    );
-  }
-  
-  export default Home;
-  
+            </div>
+          )}
+          {!hideBg && (
+            <IonButton className="center-button" onClick={startScan}>
+              <IonIcon icon={scanOutline} slot="start" />
+              Start Scan
+            </IonButton>
+          )}
+        </IonContent>
+      </IonPage>
+    </div>
+  );
+}
+
+export default Home;
