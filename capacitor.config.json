@@ -1,0 +1,5 @@
+{
+  "appId": "com.ionc.app",
+  "appName": "my-cap-pwa-app",
+  "webDir": "dist"
+}
